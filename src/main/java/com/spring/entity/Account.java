@@ -26,8 +26,12 @@ public abstract class Account {
 	@Column(name="OPENINGDATE")
 	protected Date openingDate;
 	
+	@Column(name="ACCOUNTTYPE")
+	protected String accountType;
 	
-    @OneToOne(cascade = CascadeType.ALL)
+	
+
+	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "userId")
     protected User user;
 
@@ -35,10 +39,11 @@ public abstract class Account {
 
 	}
     
-	public Account(long accountNo, BigDecimal balance, Date openingDate) {
+	public Account(long accountNo, BigDecimal balance, Date openingDate, String accountType) {
 		this.accountNo = accountNo;
 		this.balance = balance;
 		this.openingDate = openingDate;
+		this.accountType=accountType;
 	}
 
 	public long getAccountNo() {
@@ -73,6 +78,15 @@ public abstract class Account {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+    public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
 	
 	public abstract BigDecimal getInrestRate();
 	

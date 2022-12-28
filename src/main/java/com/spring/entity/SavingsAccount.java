@@ -19,8 +19,8 @@ public class SavingsAccount extends Account{
 		super();
 	}
 
-	public SavingsAccount(long accountNo, BigDecimal balance, Date openingDate, BigDecimal intrestEarned) {
-		super(accountNo, balance, openingDate);
+	public SavingsAccount(long accountNo, BigDecimal balance, Date openingDate, BigDecimal intrestEarned, String accountType) {
+		super(accountNo, balance, openingDate, accountType);
 		this.intrestEarned=intrestEarned;
 	}
 
