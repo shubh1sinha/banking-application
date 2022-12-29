@@ -3,18 +3,22 @@ package com.spring.service;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.dto.UserDTO;
 import com.spring.entity.Account;
 import com.spring.entity.FDAccount;
 import com.spring.entity.SavingsAccount;
+import com.spring.entity.Transaction;
 import com.spring.entity.User;
 import com.spring.repo.AccountRepository;
 import com.spring.repo.FDAccountRepository;
 import com.spring.repo.SavingsAccountRepository;
+import com.spring.repo.TransactionRepo;
 import com.spring.repo.UserRepository;
 
 @Service
@@ -31,6 +35,9 @@ public class AdminServce implements AdminServiceDAO {
 
 	@Autowired
 	private FDAccountRepository fdAccountRepo;
+
+	@Autowired
+	private TransactionRepo transactionRepo;
 
 	@Override
 	/***
@@ -85,6 +92,34 @@ public class AdminServce implements AdminServiceDAO {
 			accountRepo.save(account);
 			return "FD Account with accountNo= " + account.getAccountNo() + " Created!";
 		}
+	}
+
+	@Transactional
+	@Override
+	public String generateTransaction(Transaction transaction) {
+		Optional<Account> toAccount = accountRepo.findById(transaction.getToAccount());
+		Optional<Account> fromAccount = accountRepo.findById(transaction.getToAccount());
+		if(toAccount.isPresent()) {
+		if (fromAccount.get().getAccountType().equals("Savings") && toAccount.get().getAccountType().equals("Savings")) {
+			if (fromAccount.get().getBalance().intValue() >= transaction.getAmount().intValue()) {
+				accountRepo.toAccountTransaction(transaction.getToAccount(), transaction.getAmount());
+				accountRepo.fromAccountTransaction(transaction.getFromAccount(), transaction.getAmount());
+				transaction.setTransactionDate(getCurrentDate());
+				transactionRepo.save(transaction);
+				return "Transaction with amount= " + transaction.getAmount() + " to Account No.= "
+						+ transaction.getToAccount() + " successfull!.";
+			} else {
+				return "Low Balance in the account";
+			}
+
+		} else {
+			return "Transaction in FD Account is not possible.";
+		}
+	}
+		else {
+			return "Account not found!";
+		}
+
 	}
 
 	public Date getMaturityDate(int period) {
