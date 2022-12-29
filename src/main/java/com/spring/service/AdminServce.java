@@ -96,9 +96,12 @@ public class AdminServce implements AdminServiceDAO {
 
 	@Transactional
 	@Override
+		/***
+	 * @author shusinha5 {@summary Transaction from one accoun to another is processed.}
+	 */
 	public String generateTransaction(Transaction transaction) {
 		Optional<Account> toAccount = accountRepo.findById(transaction.getToAccount());
-		Optional<Account> fromAccount = accountRepo.findById(transaction.getToAccount());
+		Optional<Account> fromAccount = accountRepo.findById(transaction.getFromAccount());
 		if(toAccount.isPresent()) {
 		if (fromAccount.get().getAccountType().equals("Savings") && toAccount.get().getAccountType().equals("Savings")) {
 			if (fromAccount.get().getBalance().intValue() >= transaction.getAmount().intValue()) {
