@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.dto.TransactionDTO;
 import com.spring.dto.UserDTO;
-import com.spring.entity.Transaction;
 import com.spring.service.AdminServiceDAO;
 
 @RestController
@@ -24,7 +24,7 @@ public class AdminRestController {
 	}
 	
 	@PostMapping("/transaction")
-	public ResponseEntity<String> doTransaction(@RequestBody Transaction transaction){
+	public ResponseEntity<String> doTransaction(@RequestBody TransactionDTO transaction){
 		String response= adminService.generateTransaction(transaction);
 		return ResponseEntity.ok(response);
 	}

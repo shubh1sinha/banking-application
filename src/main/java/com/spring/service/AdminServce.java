@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.dto.TransactionDTO;
 import com.spring.dto.UserDTO;
 import com.spring.entity.Account;
 import com.spring.entity.FDAccount;
@@ -16,10 +17,7 @@ import com.spring.entity.SavingsAccount;
 import com.spring.entity.Transaction;
 import com.spring.entity.User;
 import com.spring.repo.AccountRepository;
-import com.spring.repo.FDAccountRepository;
-import com.spring.repo.SavingsAccountRepository;
 import com.spring.repo.TransactionRepo;
-import com.spring.repo.UserRepository;
 
 @Service
 public class AdminServce implements AdminServiceDAO {
@@ -28,16 +26,9 @@ public class AdminServce implements AdminServiceDAO {
 	private AccountRepository accountRepo;
 
 	@Autowired
-	private UserRepository userRepo;
-
-	@Autowired
-	private SavingsAccountRepository savingsAccountRepo;
-
-	@Autowired
-	private FDAccountRepository fdAccountRepo;
-
-	@Autowired
 	private TransactionRepo transactionRepo;
+	
+	
 
 	@Override
 	/***
@@ -52,13 +43,6 @@ public class AdminServce implements AdminServiceDAO {
 		setUser.setPanCard(user.getPanCard());
 		setUser.setPhoneNo(user.getPhoneNo());
 		setUser.setAddress(user.getAddress());
-		if (userRepo.getNullUserId() == null) {
-			setUser.setUserId(1);
-		} else {
-			setUser.setUserId(userRepo.getMaxUserId() + 1);
-		}
-
-		userRepo.save(setUser);
 		if (user.getAccountType().equals("Savings")) {
 			Account savingsAccount = new SavingsAccount();
 			SavingsAccount account = (SavingsAccount) savingsAccount;
@@ -73,7 +57,7 @@ public class AdminServce implements AdminServiceDAO {
 				account.setAccountNo(accountRepo.getMaxAccountNo() + 1);
 			}
 			accountRepo.save(account);
-			return "Savings Account with accountNo= " + account.getAccountNo() + " Created!";
+			return "Savings Account with accountNo= " + account.getAccountNo() + " Created For user="+setUser.getFirstName()+" "+setUser.getLastName();
 
 		} else {
 			Account fdAccount = new FDAccount();
@@ -89,6 +73,7 @@ public class AdminServce implements AdminServiceDAO {
 			} else {
 				account.setAccountNo(accountRepo.getMaxAccountNo() + 1);
 			}
+			account.setRenewDate(true); 
 			accountRepo.save(account);
 			return "FD Account with accountNo= " + account.getAccountNo() + " Created!";
 		}
@@ -96,18 +81,19 @@ public class AdminServce implements AdminServiceDAO {
 
 	@Transactional
 	@Override
-		/***
-	 * @author shusinha5 {@summary Transaction from one accoun to another is processed.}
-	 */
-	public String generateTransaction(Transaction transaction) {
+	public String generateTransaction(TransactionDTO transaction) {
 		Optional<Account> toAccount = accountRepo.findById(transaction.getToAccount());
-		Optional<Account> fromAccount = accountRepo.findById(transaction.getFromAccount());
+		Optional<Account> fromAccount = accountRepo.findById(transaction.getToAccount());
+		Transaction newTransaction = new Transaction();
 		if(toAccount.isPresent()) {
 		if (fromAccount.get().getAccountType().equals("Savings") && toAccount.get().getAccountType().equals("Savings")) {
 			if (fromAccount.get().getBalance().intValue() >= transaction.getAmount().intValue()) {
 				accountRepo.toAccountTransaction(transaction.getToAccount(), transaction.getAmount());
 				accountRepo.fromAccountTransaction(transaction.getFromAccount(), transaction.getAmount());
-				transaction.setTransactionDate(getCurrentDate());
+				newTransaction.setTransactionDate(getCurrentDate());
+				newTransaction.setAmount(transaction.getAmount());
+				newTransaction.setFromAccount(transaction.getFromAccount());
+				newTransaction.setToAccount(transaction.getToAccount());
 				transactionRepo.save(transaction);
 				return "Transaction with amount= " + transaction.getAmount() + " to Account No.= "
 						+ transaction.getToAccount() + " successfull!.";

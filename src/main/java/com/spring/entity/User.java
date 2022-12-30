@@ -1,8 +1,12 @@
 package com.spring.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -12,6 +16,7 @@ public class User {
 
 	@Id
 	@Column(name = "USERID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int userId;
 
 	@Column(name = "FIRSTNAME")
@@ -29,8 +34,9 @@ public class User {
 	@Column(name = "PHONENO")
 	private String phoneNo;
 
-	@Column(name = "ADDRESS")
-	private String address;
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "addressId")
+	private Address address;
 
 	@OneToOne(mappedBy = "user")
 	Account account;
@@ -39,7 +45,7 @@ public class User {
 	}
 
 	public User(int userId, String firstName, String lastName, String panCard, String aadharNo, String phoneNo,
-			String address) {
+			Address address) {
 		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -97,13 +103,6 @@ public class User {
 		this.phoneNo = phoneNo;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
 
 	public Account getAccount() {
 		return account;
@@ -112,5 +111,15 @@ public class User {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+	
+	
 
 }
