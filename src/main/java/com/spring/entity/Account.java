@@ -3,14 +3,14 @@ package com.spring.entity;
 import java.math.BigDecimal;
 import java.sql.Date;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -25,7 +25,8 @@ public abstract class Account {
 	
 	@Column(name="OPENINGDATE")
 	protected Date openingDate;
-	
+
+
 	@Column(name="ACCOUNTTYPE")
 	protected String accountType;
 	

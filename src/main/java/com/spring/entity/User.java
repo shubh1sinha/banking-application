@@ -1,14 +1,17 @@
 package com.spring.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import java.math.BigInteger;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "USER")
@@ -29,10 +32,10 @@ public class User {
 	private String panCard;
 
 	@Column(name = "AADHARNO")
-	private String aadharNo;
+	private BigInteger aadharNo;
 
 	@Column(name = "PHONENO")
-	private String phoneNo;
+	private BigInteger phoneNo;
 
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "addressId")
@@ -44,7 +47,7 @@ public class User {
 	public User() {
 	}
 
-	public User(int userId, String firstName, String lastName, String panCard, String aadharNo, String phoneNo,
+	public User(int userId, String firstName, String lastName, String panCard, BigInteger aadharNo, BigInteger phoneNo,
 			Address address) {
 		this.userId = userId;
 		this.firstName = firstName;
@@ -87,19 +90,19 @@ public class User {
 		this.panCard = panCard;
 	}
 
-	public String getAadharNo() {
+	public BigInteger getAadharNo() {
 		return aadharNo;
 	}
 
-	public void setAadharNo(String aadharNo) {
+	public void setAadharNo(BigInteger aadharNo) {
 		this.aadharNo = aadharNo;
 	}
 
-	public String getPhoneNo() {
+	public BigInteger getPhoneNo() {
 		return phoneNo;
 	}
 
-	public void setPhoneNo(String phoneNo) {
+	public void setPhoneNo(BigInteger phoneNo) {
 		this.phoneNo = phoneNo;
 	}
 

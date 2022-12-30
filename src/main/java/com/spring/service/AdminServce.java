@@ -94,9 +94,9 @@ public class AdminServce implements AdminServiceDAO {
 				newTransaction.setAmount(transaction.getAmount());
 				newTransaction.setFromAccount(transaction.getFromAccount());
 				newTransaction.setToAccount(transaction.getToAccount());
-				transactionRepo.save(transaction);
+				transactionRepo.save(newTransaction);
 				return "Transaction with amount= " + transaction.getAmount() + " to Account No.= "
-						+ transaction.getToAccount() + " successfull!.";
+						+ transaction.getToAccount() + " successfull!. Current balance in the account is= "+fromAccount.get().getBalance().subtract(newTransaction.getAmount());
 			} else {
 				return "Low Balance in the account";
 			}
